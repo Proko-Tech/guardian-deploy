@@ -1,0 +1,21 @@
+# ignore jetbrain ide files
+.idea/
+
+# ignore node_modules
+node_modules/
+
+# vscode ignores
+.vs
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Local History for Visual Studio Code
+.history/
+
+# environment file
+.env
+.DS_Store
