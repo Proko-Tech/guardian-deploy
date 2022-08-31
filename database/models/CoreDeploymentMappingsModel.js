@@ -8,7 +8,7 @@ const db = require('../dbConfig');
  * ArrayIfAlready<TResult, DeferredKeySelection<TRecord, string>>>>}
  */
 async function getByRepositoryIdAndBranchName(repositoryId, branchName) {
-  const rows = db('core_deployment_mappings')
+  const rows = db('code_deployment_mappings')
       .where('repository_id', repositoryId)
       .andWhere('branch_name', branchName)
       .select('*');
