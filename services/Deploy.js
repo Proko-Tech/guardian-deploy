@@ -24,8 +24,10 @@ async function sshConnect(host, username, privateKey) {
 async function runDeployment(
     host, username, privateKey, repoPath, deployService) {
   try {
-    await sshConnect(host, username, privateKey);
-    await ssh.exec(`cd ${repoPath} && git pull`);
+    const connection = await sshConnect(host, username, privateKey);
+    console.log(connection);
+    const result = await ssh.exec(`cd ${repoPath} && git pull`);
+    console.log(result);
     switch (deployService) {
       case 'PM2':
         await ssh.exec(`cd ${repoPath} && npm install && sudo pm2 restart all`);

@@ -20,6 +20,7 @@ async function getByFilename(fileName) {
     Key: fileName,
   };
   const file = await s3.getObject(params).promise();
+  console.log("file is: ", file);
   return file.Body;
 }
 
