@@ -24,21 +24,33 @@ async function sshConnect(host, username, privateKey) {
 async function runDeployment(
     host, username, privateKey, repoPath, deployService) {
   try {
-    const connection = await sshConnect(host, username, privateKey);
-    console.log(connection);
-    const result = await ssh.exec(`cd ${repoPath} && git pull`);
-    console.log(result);
-    switch (deployService) {
-      case 'PM2':
-        await ssh.exec(`cd ${repoPath} && npm install && sudo pm2 restart all`);
-        break;
-      case 'FOREVER':
-        await ssh.exec(`cd ${repoPath} && npm install && ` +
-          `sudo forever restartall`);
-        break;
-      default:
-        return {ok: false, msg: 'service not found'};
-    }
+    ssh.connect({host, username, privateKey})
+      .then(function() {
+        ssh.execCommand(`cd ${repoPath} && git pull`)
+          .then(function(result) {
+          console.log('STDOUT: ' + result.stdout)
+          console.log('STDERR: ' + result.stderr)
+        })
+        switch (deployService) {
+          case 'PM2':
+            ssh.execCommand(`cd ${repoPath} && npm install && sudo pm2 restart all`)
+              .then(function(result) {
+              console.log('STDOUT: ' + result.stdout)
+              console.log('STDERR: ' + result.stderr)
+            });
+            break;
+          case 'FOREVER':
+            ssh.execCommand(`cd ${repoPath} && npm install && ` +
+              `sudo forever restartall`)
+              .then(function(result) {
+                console.log('STDOUT: ' + result.stdout)
+                console.log('STDERR: ' + result.stderr)
+              });
+            break;
+          default:
+            return {ok: false, msg: 'service not found'};
+        }
+      })
     return {ok: true, msg: 'deployment succeeded'};
   } catch (err) {
     return {ok: true, msg: 'failed', err};
