@@ -24,7 +24,7 @@ async function sshConnect(host, username, privateKey) {
 async function runDeployment(
     host, username, privateKey, repoPath, deployService) {
   try {
-    ssh.connect({host, username, privateKey})
+    ssh.connect({host, username, privateKey: privateKey.toString()})
       .then(function() {
         ssh.execCommand(`cd ${repoPath} && git pull`)
           .then(function(result) {
