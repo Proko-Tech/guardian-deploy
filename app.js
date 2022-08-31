@@ -4,7 +4,7 @@ const app = require('./app/index');
 const debug = require('debug')('Proko_Park_BE:server');
 const server = http.createServer(app);
 
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '80');
 app.set('port', port);
 
 /**
