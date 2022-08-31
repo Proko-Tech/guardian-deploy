@@ -10,7 +10,7 @@ const db = require('../dbConfig');
 async function getByRepositoryIdAndBranchName(repositoryId, branchName) {
   const rows = db('code_deployment_mappings')
       .where('repository_id', repositoryId)
-      .andWhere('branch_name', branchName)
+      .andWhere('default_branch', branchName)
       .select('*');
   return rows;
 }
