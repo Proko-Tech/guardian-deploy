@@ -1,8 +1,8 @@
-const deploy_service = ['PM2', 'FOREVER', 'DOCKER'];
+const deployService = ['PM2', 'FOREVER', 'DOCKER'];
 
 /**
- * @param { import("knex").Knex } knex
- * @returns {Knex.SchemaBuilder}
+ * @param {Knex} knex
+ * @return {Knex.SchemaBuilder}
  */
 exports.up = function(knex) {
   return knex.schema.createTable('code_deployment_mappings', (tbl) => {
@@ -11,18 +11,18 @@ exports.up = function(knex) {
     tbl.text('target_host').notNullable();
     tbl.text('server_username').notNullable();
     tbl.text('access_key_file_name').notNullable();
-    tbl.enum('deploy_service', deploy_service, {
+    tbl.enum('deploy_service', deployService, {
       useNative: true,
       enumName: 'deploy_service',
     })
-      .notNullable()
-      .index();
+        .notNullable()
+        .index();
   });
 };
 
 /**
- * @param { import("knex").Knex } knex
- * @returns {Knex.SchemaBuilder}
+ * @param {Knex} knex
+ * @return {Knex.SchemaBuilder}
  */
 exports.down = function(knex) {
   return knex.schema.dropTable('code_deployment_mappings');
