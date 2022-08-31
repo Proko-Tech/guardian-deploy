@@ -8,7 +8,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const logger = require('morgan');
 
-const apiRouter = require('./routes/api');
+const hookRouter = require('./routes/hook');
 
 const server = express();
 
@@ -23,7 +23,7 @@ server.use(cors());
 server.use(cookieParser());
 server.use(express.static(path.join(__dirname, 'public')));
 
-server.use('/api', apiRouter);
+server.use('/hook', hookRouter);
 
 server.use(function(req, res, next) {
   next(createError(404));
