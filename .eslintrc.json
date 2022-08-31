@@ -11,5 +11,16 @@
         "ecmaVersion": "latest"
     },
     "rules": {
+        "max-len": [
+            "error",
+            {
+                "code": 80,
+                "tabWidth": 4,
+                "ignoreUrls": true,
+                "ignoreStrings": true,
+                "ignorePattern": ".(module|require)'",
+                "ignoreComments": true
+            }
+        ]
     }
 }
