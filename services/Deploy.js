@@ -1,17 +1,5 @@
-const {NodeSSH} = require('node-ssh');
-const ssh = new NodeSSH();
-
-/**
- * Connect to server via secure shell.
- * @param {string} host
- * @param {string} username
- * @param {Buffer} privateKey
- * @return {Promise<void>}
- */
-async function sshConnect(host, username, privateKey) {
-  await ssh.connect({host, username, privateKey});
-}
-
+const shell = require('shelljs')
+const { deleteFile } = require('../services/CreateFile');
 /**
  * run deployment to the repo.
  * @param {string} host
@@ -24,36 +12,23 @@ async function sshConnect(host, username, privateKey) {
 async function runDeployment(
     host, username, privateKey, repoPath, deployService) {
   try {
-    ssh.connect({host, username, privateKey: privateKey.toString()})
-      .then(function() {
-        ssh.execCommand(`cd ${repoPath} && git pull`)
-          .then(function(result) {
-          console.log('STDOUT: ' + result.stdout)
-          console.log('STDERR: ' + result.stderr)
-        })
-        switch (deployService) {
-          case 'PM2':
-            ssh.execCommand(`cd ${repoPath} && npm install && sudo pm2 restart all`)
-              .then(function(result) {
-              console.log('STDOUT: ' + result.stdout)
-              console.log('STDERR: ' + result.stderr)
-            });
-            break;
-          case 'FOREVER':
-            ssh.execCommand(`cd ${repoPath} && npm install && ` +
-              `sudo forever restartall`)
-              .then(function(result) {
-                console.log('STDOUT: ' + result.stdout)
-                console.log('STDERR: ' + result.stderr)
-              });
-            break;
-          default:
-            return {ok: false, msg: 'service not found'};
-        }
-      })
-    return {ok: true, msg: 'deployment succeeded'};
+    switch (deployService) {
+      case 'PM2':
+        shell.exec(`sh ./bin/pm2 ${username} ${host} ${privateKey} ${repoPath}`, async (error, stdout, stderr) => {
+          await deleteFile( privateKey);
+        });
+        break;
+      case 'FOREVER':
+        await shell.exec(`sh ./bin/forever ${username} ${host} ${privateKey} ${repoPath}`, async (error, stdout, stderr) => {
+          await deleteFile( privateKey);
+        });
+        break;
+      default:
+        return {ok: false, msg: 'Deployment modee not supported'};
+    }
+    return {ok: true, msg: 'Deployed'};
   } catch (err) {
-    return {ok: true, msg: 'failed', err};
+    return {ok: false, msg: 'failed', err};
   }
 }
 

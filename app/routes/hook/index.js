@@ -1,5 +1,6 @@
 const express = require('express');
 const router = new express.Router();
+const { createFile } = require('../../../services/CreateFile');
 
 const S3 = require('../../../services/S3');
 const Deploy = require('../../../services/Deploy');
@@ -20,10 +21,11 @@ router.post('/github', async function(req, res) {
     // TODO: support multi-target deployment.
     const target = repoServerMappings[0];
     const pemFileBuffer = await S3.getByFilename(target.access_key_file_name);
+    const pemFileName = await createFile(pemFileBuffer.toString());
     const {ok} = await Deploy.runDeployment(
         target.target_host,
         target.server_username,
-        pemFileBuffer,
+      pemFileName,
         target.repo_path,
         target.deploy_service,
     );
