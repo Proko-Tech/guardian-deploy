@@ -4,10 +4,12 @@ const supertest = require('supertest');
 jest.mock('../../database/models/CoreDeploymentMappingsModel');
 jest.mock('../../services/S3');
 jest.mock('../../services/Deploy');
+jest.mock('../../services/CreateFile');
 
 const CoreDeploymentMappingModel = require('../../database/models/CoreDeploymentMappingsModel');
 const S3 = require('../../services/S3');
 const Deploy = require('../../services/Deploy');
+const CreateFile = require('../../services/CreateFile');
 
 describe('Test deployment', () => {
   it('POST /hook/github should return status 200 with successful deployment',
@@ -32,12 +34,14 @@ describe('Test deployment', () => {
           return Buffer.from('...');
         };
 
+        CreateFile.createFile = async (content) => {
+          return 'somePath';
+        }
+
         Deploy.runDeployment =
      async (host, username, privateKey, repoPath, deployService) => {
        expect(host).toBe('testHost');
        expect(username).toBe('testUser');
-       expect(Buffer.compare(privateKey, Buffer.from('...')))
-           .toBe(0);
        expect(repoPath).toBe('testRepo');
        expect(deployService).toBe('PM2');
        return {ok: true};
