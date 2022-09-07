@@ -5,6 +5,7 @@ jest.mock('../../database/models/CoreDeploymentMappingsModel');
 jest.mock('../../services/S3');
 jest.mock('../../services/Deploy');
 jest.mock('../../services/CreateFile');
+jest.mock('../../services/Slack');
 
 const CoreDeploymentMappingModel = require('../../database/models/CoreDeploymentMappingsModel');
 const S3 = require('../../services/S3');
@@ -39,12 +40,12 @@ describe('Test deployment', () => {
         }
 
         Deploy.runDeployment =
-     async (host, username, privateKey, repoPath, deployService) => {
+     async (host, username, privateKey, repoPath, deployService, callback) => {
        expect(host).toBe('testHost');
        expect(username).toBe('testUser');
        expect(repoPath).toBe('testRepo');
        expect(deployService).toBe('PM2');
-       return {ok: true};
+       callback({ok: true, error: null})
      };
 
         const res = await supertest(app)
