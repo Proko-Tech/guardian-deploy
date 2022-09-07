@@ -9,31 +9,33 @@ const { deleteFile } = require('../services/CreateFile');
  * @param {string} deployService
  * @return {Promise<{msg: string, err, ok: boolean}|{msg: string, ok: boolean}>}
  */
-async function runDeployment(
-    host, username, privateKey, repoPath, deployService) {
+function runDeployment(
+    host, username, privateKey, repoPath, deployService, callback) {
   try {
     switch (deployService) {
       case 'PM2':
         shell.exec(`sh ./bin/pm2 ${username} ${host} ${privateKey} ${repoPath}`, async (error, stdout, stderr) => {
           await deleteFile( privateKey);
+          callback({ok: true, msg: 'Deployed'}, null);
         });
         break;
       case 'FOREVER':
-        await shell.exec(`sh ./bin/forever ${username} ${host} ${privateKey} ${repoPath}`, async (error, stdout, stderr) => {
+        shell.exec(`sh ./bin/forever ${username} ${host} ${privateKey} ${repoPath}`, async (error, stdout, stderr) => {
           await deleteFile( privateKey);
+          callback({ok: true, msg: 'Deployed'}, null);
         });
         break;
       case 'DOCKER':
-        await shell.exec(`sh ./bin/docker ${username} ${host} ${privateKey} ${repoPath}`, async (error, stdout, stderr) => {
+        shell.exec(`sh ./bin/docker ${username} ${host} ${privateKey} ${repoPath}`, async (error, stdout, stderr) => {
           await deleteFile( privateKey);
+          callback({ok: true, msg: 'Deployed'}, null);
         });
         break;
       default:
-        return {ok: false, msg: 'Deployment mode not supported'};
+        callback({ok: false, msg: 'Deployment mode not supported'}, null);
     }
-    return {ok: true, msg: 'Deployed'};
   } catch (err) {
-    return {ok: false, msg: 'failed', err};
+    callback({ok: false, msg: 'failed', err}, err);
   }
 }
 
