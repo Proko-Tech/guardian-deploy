@@ -23,8 +23,13 @@ async function runDeployment(
           await deleteFile( privateKey);
         });
         break;
+      case 'DOCKER':
+        await shell.exec(`sh ./bin/docker ${username} ${host} ${privateKey} ${repoPath}`, async (error, stdout, stderr) => {
+          await deleteFile( privateKey);
+        });
+        break;
       default:
-        return {ok: false, msg: 'Deployment modee not supported'};
+        return {ok: false, msg: 'Deployment mode not supported'};
     }
     return {ok: true, msg: 'Deployed'};
   } catch (err) {
