@@ -1,4 +1,8 @@
 # Guardian Deploy 🫡
+
+![Lint](https://github.com/Proko-Tech/guardian-deploy/actions/workflows/lint.yml/badge.svg)
+![Build](https://github.com/Proko-Tech/guardian-deploy/actions/workflows/node.js.yml/badge.svg)
+
 ## Introduction
 Guardian Deploy is a server tool that deploys the newest updates from a github repo(through github webhook) into an EC2
 instance.
