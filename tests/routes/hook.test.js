@@ -11,6 +11,8 @@ const CoreDeploymentMappingModel = require('../../database/models/CoreDeployment
 const S3 = require('../../services/S3');
 const Deploy = require('../../services/Deploy');
 const CreateFile = require('../../services/CreateFile');
+const TasksModel = require('../../database/models/TasksModel');
+const Mailer = require('../../services/Mailer');
 
 describe('Test deployment', () => {
   it('POST /hook/github should return status 200 with successful deployment',
@@ -19,6 +21,7 @@ describe('Test deployment', () => {
      async (repositoryId, branchName) => {
        return [
          {
+           id: 1,
            repository_id: repositoryId,
            default_branch: branchName,
            target_host: 'testHost',
@@ -26,6 +29,7 @@ describe('Test deployment', () => {
            access_key_file_name: 'testFile',
            repo_path: 'testRepo',
            deploy_service: 'PM2',
+           owners: 'x@prokopark.us',
          },
        ];
      };
@@ -35,9 +39,23 @@ describe('Test deployment', () => {
           return Buffer.from('...');
         };
 
+        TasksModel.insert = (payload) => {
+          expect(payload.code_deployment_mappings_id).toBe(1);
+          return [1];
+        }
+
+        Mailer.sendTextEmail = (emailPayload) => {
+          expect(emailPayload.to).toBe('x@prokopark.us');
+        }
+
+        Mailer.sendEmailTemplate = (payload, emailPayload) => {
+          expect(payload.to).toBe('x@prokopark.us');
+          expect(emailPayload.stdout).toBe('stdout');
+        }
+
         CreateFile.createFile = async (content) => {
           return 'somePath';
-        }
+        };
 
         Deploy.runDeployment =
      async (host, username, privateKey, repoPath, deployService, callback) => {
@@ -45,8 +63,12 @@ describe('Test deployment', () => {
        expect(username).toBe('testUser');
        expect(repoPath).toBe('testRepo');
        expect(deployService).toBe('PM2');
-       callback({ok: true, error: null})
+       callback({ok: true, error: null, stdout: 'stdout', stderr: 'stderr'});
      };
+
+        TasksModel.updateById = (id, payload) => {
+          expect(id).toBe(1);
+        }
 
         const res = await supertest(app)
             .post('/hook/github/')

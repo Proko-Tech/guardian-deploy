@@ -1,5 +1,5 @@
-const shell = require('shelljs')
-const { deleteFile } = require('../services/CreateFile');
+const shell = require('shelljs');
+const {deleteFile} = require('../services/CreateFile');
 /**
  * run deployment to the repo.
  * @param {string} host
@@ -16,19 +16,19 @@ function runDeployment(
       case 'PM2':
         shell.exec(`sh ./bin/pm2 ${username} ${host} ${privateKey} ${repoPath}`, async (error, stdout, stderr) => {
           await deleteFile( privateKey);
-          callback({ok: true, msg: 'Deployed'}, null);
+          callback({ok: true, msg: 'Deployed', stdout, stderr}, null);
         });
         break;
       case 'FOREVER':
         shell.exec(`sh ./bin/forever ${username} ${host} ${privateKey} ${repoPath}`, async (error, stdout, stderr) => {
           await deleteFile( privateKey);
-          callback({ok: true, msg: 'Deployed'}, null);
+          callback({ok: true, msg: 'Deployed', stdout, stderr}, null);
         });
         break;
       case 'DOCKER':
         shell.exec(`sh ./bin/docker ${username} ${host} ${privateKey} ${repoPath}`, async (error, stdout, stderr) => {
           await deleteFile( privateKey);
-          callback({ok: true, msg: 'Deployed'}, null);
+          callback({ok: true, msg: 'Deployed', stdout, stderr}, null);
         });
         break;
       default:
