@@ -3,7 +3,7 @@ const db = require('../dbConfig');
 /**
  * Insert a new record into tasks table, returning id of the newly inserted
  * record.
- * @param payload
+ * @param {object} payload
  * @returns {Promise<awaited Knex.QueryBuilder<TRecord, number[]>>}
  */
 async function insert(payload) {
@@ -14,8 +14,8 @@ async function insert(payload) {
 
 /**
  * Update task by id.
- * @param id
- * @param payload
+ * @param {number} id
+ * @param {object} payload
  * @return {Promise<void>}
  */
 async function updateById(id, payload) {

@@ -1,12 +1,17 @@
 const fs = require('fs');
 const crypto = require('crypto');
 
+/**
+ * Creates the pem access file.
+ * @param {object} content
+ * @return {Promise<string>}
+ */
 async function createFile(content) {
-  const current_date = new Date().valueOf().toString();
+  const currentDate = new Date().valueOf().toString();
   const random = Math.random().toString();
   const hash = crypto
       .createHash('sha1')
-      .update(current_date + random)
+      .update(currentDate + random)
       .digest('hex');
   const filePath = './bin/' + hash + '.pem';
   await fs.writeFileSync(filePath, content);

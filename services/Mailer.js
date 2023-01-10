@@ -35,7 +35,7 @@ const transporter = nodemailer.createTransport(
 
 /**
  * Send text based email.
- * @param emailPayload
+ * @param {object} emailPayload
  * @return {Promise<*>}
  */
 async function sendTextEmail(emailPayload) {
@@ -48,14 +48,14 @@ async function sendTextEmail(emailPayload) {
 
 /**
  * Send email with template.
- * @param payload
- * @param emailPayload
+ * @param {object} payload
+ * @param {object} emailPayload
  * @return {Promise<void>}
  */
 async function sendEmailTemplate(payload, emailPayload) {
   const html = await ejs.renderFile(
-    path.join(__dirname, '..', 'templates/emailTemplate.ejs'),
-    {payload: emailPayload});
+      path.join(__dirname, '..', 'templates/emailTemplate.ejs'),
+      {payload: emailPayload});
   const mailOptions = {
     from: process.env.EMAILUSER, ...payload, html,
   };

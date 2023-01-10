@@ -43,17 +43,17 @@ describe('Test deployment', () => {
         TasksModel.insert = (payload) => {
           expect(payload.code_deployment_mappings_id).toBe(1);
           return [1];
-        }
+        };
 
         Mailer.sendTextEmail = async (emailPayload) => {
           expect(emailPayload.to).toBe('email@email.com');
-        }
+        };
 
         Mailer.sendEmailTemplate = (payload, emailPayload) => {
-          console.log('amazingly here')
+          console.log('amazingly here');
           expect(payload.to).toBe('email@email.com');
           expect(emailPayload.stdout).toBe('stdout');
-        }
+        };
 
         CreateFile.createFile = async (content) => {
           return 'somePath';
@@ -70,7 +70,7 @@ describe('Test deployment', () => {
 
         TasksModel.updateById = (id, payload) => {
           expect(id).toBe(1);
-        }
+        };
 
         const res = await supertest(app)
             .post('/hook/github/')
