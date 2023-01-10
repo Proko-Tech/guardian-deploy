@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Deployment Update</title>
+</head>
+<body>
+<div>
+    <h4><%=payload.repoName%> Deployment</h4>
+    <span>DONE</span>
+</div>
+<div>
+    <h5>Standard Output:</h5>
+    <pre><%=payload.stdout%></pre>
+    <h5>Standard Error:</h5>
+    <pre style="color: red"><%=payload.stderr%></pre>
+</div>
+</body>
+</html>
