@@ -6,6 +6,7 @@ jest.mock('../../services/S3');
 jest.mock('../../services/Deploy');
 jest.mock('../../services/CreateFile');
 jest.mock('../../services/Slack');
+jest.mock('../../services/Mailer');
 
 const CoreDeploymentMappingModel = require('../../database/models/CoreDeploymentMappingsModel');
 const S3 = require('../../services/S3');
@@ -29,7 +30,7 @@ describe('Test deployment', () => {
            access_key_file_name: 'testFile',
            repo_path: 'testRepo',
            deploy_service: 'PM2',
-           owners: 'x@prokopark.us',
+           owners: 'email@email.com',
          },
        ];
      };
@@ -44,12 +45,13 @@ describe('Test deployment', () => {
           return [1];
         }
 
-        Mailer.sendTextEmail = (emailPayload) => {
-          expect(emailPayload.to).toBe('x@prokopark.us');
+        Mailer.sendTextEmail = async (emailPayload) => {
+          expect(emailPayload.to).toBe('email@email.com');
         }
 
         Mailer.sendEmailTemplate = (payload, emailPayload) => {
-          expect(payload.to).toBe('x@prokopark.us');
+          console.log('amazingly here')
+          expect(payload.to).toBe('email@email.com');
           expect(emailPayload.stdout).toBe('stdout');
         }
 
